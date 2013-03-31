@@ -58,6 +58,17 @@ class Category_Aware_Walker_Nav_Menu extends Walker_Nav_Menu {
    * @param object $args
    */
   function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+    /* Make menu category aware for single posts. */
+    if (is_singular()) {
+      global $post;
+      $terms = wp_get_post_terms($post->ID, get_taxonomies());
+      foreach($terms as $term) {
+        if ($term->term_id === $item->object_id) {
+          $item->classes[] = 'current-menu-item';
+        }
+      }
+    }
+
     $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 
     $class_names = $value = '';
